@@ -55,32 +55,38 @@ function loadAnimations(){
   cloudAnimation = loadAnimation(backImage, transitionImage1, transitionImage2, transitionImage3, cloudImage);
 }
 
-
-/*
- * function loadSounds()
- * Works very similarly to loadImages(), only for music and sound effects.
- * Example:
-   function loadSounds() {
-     soundFormats("mp3", "wav");
-     mySound = loadSound("assets/sound/sound.wav");
-     myOtherSound = loadSound("assets/sound/otherSound.mp3");
+function loadSounds(){
+   soundFormats("mp3", "wav");
+   flipSound = loadSound("assets/sound/flip.wav");
+   matchSound = loadSound("assets/sound/match.wav");
+   nopeSound = loadSound("assets/sound/nope.wav");
+   winSound = loadSound("assets/sound/win.wav");
+   loseSound = loadSound("assets/sound/lose.wav");
+   bgMusic = loadSound("assets/sound/bgm.mp3");
    }
- */
 
 
 function preload(){
   loadImages();
   loadAnimations();
+  loadSounds();
 }
 
 
 function setup(){
+  bgMusic.setVolume(.01);
+  bgMusic.loop();
   gameScreen = createCanvas(790,370);
   gameScreen.parent("#game-screen");
+  messageDisplay = select("#message-display");
+  livesDisplay = select("#lives-display");
+  resetButton = select("#Reset");
+  musicButton = select("#Music");
+  resetButton.mousePressed(resetGame);
+  musicButton.mousePressed(toggleMusic);
+  init();
   spriteWidth = 120;
   spriteHeight = 168;
-  spriteX = 70;
-  spriteY = 95;
   imageArray = [backImage, sunImage, moonImage, boltImage, heartImage, smileyImage, cloudImage];
   resizeImages();
   createSprites();
@@ -89,8 +95,6 @@ function setup(){
   shuffle(spriteArray, true);
   placeSprites();
   spritesActive = true;
-  matches = 0;
-  lives = 5;
 }
 
 
@@ -101,26 +105,34 @@ function setup(){
  }
  
 
-/*
- * function init()
- * Initializes various elements of the game. Called in both setup() and
- * resetGame(). Helps reduce some of the bloat and redundancy in both of those
- * functions (DRY principle = "don't repeat yourself")
- */
+function init(){
+  resetButton.hide();
+  musicButton.show();
+  messageDisplay.html("Lives: ");
+  livesDisplay.html(lives);
+  lives = 5;
+  matches = 0;
+  firstChoice = undefined;
+  secondChoice = undefined;
+  spriteX = 70;
+  spriteY = 95;
+}
 
 
-/*
- * function resetGame()
- * Resets the game by calling init(), resetAllSprites(), then after a 1000
- * millisecond delay, calls shuffle(spriteArray, true), placeSprites(), and
- * sets spritesActive to true.
- */
+function resetGame(){
+  init();
+  resetAllSprites();setTimeout(function(){shuffle(spriteArray,true); placeSprites(); spritesActive=true;,1000});
+}
 
 
-/*
- * function toggleMusic()
- * Toggles the background music on and off.
- */
+function toggleMusic(){
+  if(bgMusic.isPlaying()){
+    bgMusic.pause();
+  }
+  else{
+    bgMusic.loop();
+  }
+}
 
 
 function resizeImages(){
@@ -176,12 +188,14 @@ function placeSprites(){
 function activateSprites(s){
   s.onMousePressed = function(){
     if(spritesActive && s.animation.getFrame() !== s.animation.getLastFrame()){
-      if(firstChoice == undefined){
+      if(firstChoice === undefined){
         firstChoice = s;
+        flipSound.play();
         s.animation.goToFrame(s.animation.getLastFrame());
       }
       else if(s != firstChoice){
         secondChoice = s;
+        flipSound.play();
         s.animation.goToFrame(s.animation.getLastFrame());
         checkMatch();
       }
@@ -214,6 +228,7 @@ function checkMatch(){
     spritesActive = false;
     if(lives === 0){
       setTimeout(function(){flipAllSprites(); alert("You lose!");},2000);
+      //element.html("You lose");
     }
     else{
       setTimeout(function(){firstChoice.animation.goToFrame(0);secondChoice.animation.goToFrame(0);firstChoice = undefined; secondChoice = undefined; spritesActive = true;}, 2000);
