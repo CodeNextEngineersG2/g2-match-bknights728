@@ -87,7 +87,7 @@ function setup(){
   init();
   spriteWidth = 120;
   spriteHeight = 168;
-  imageArray = [backImage, sunImage, moonImage, boltImage, heartImage, smileyImage, cloudImage];
+  imageArray = [backImage, sunImage, moonImage, boltImage, heartImage, smileyImage, cloudImage, transitionImage1, transitionImage2, transitionImage3];
   resizeImages();
   createSprites();
   spriteArray = [sunSprite1, sunSprite2, moonSprite1, moonSprite2, boltSprite1, boltSprite2, heartSprite1, heartSprite2, smileySprite1, smileySprite2, cloudSprite1, cloudSprite2];
@@ -109,8 +109,8 @@ function init(){
   resetButton.hide();
   musicButton.show();
   messageDisplay.html("Lives: ");
-  livesDisplay.html(lives);
   lives = 5;
+  livesDisplay.html(lives);
   matches = 0;
   firstChoice = undefined;
   secondChoice = undefined;
@@ -121,7 +121,9 @@ function init(){
 
 function resetGame(){
   init();
-  resetAllSprites();setTimeout(function(){shuffle(spriteArray,true); placeSprites(); spritesActive=true;,1000});
+  livesDisplay.show();
+  livesDisplay.html(lives);
+  resetAllSprites();setTimeout(function(){shuffle(spriteArray,true); placeSprites(); spritesActive=true;1000});
 }
 
 
@@ -214,9 +216,15 @@ function checkMatch(){
   var cloudMatch = (firstChoice === cloudSprite1 && secondChoice === cloudSprite2 || firstChoice === cloudSprite2 && secondChoice === cloudSprite1);
   if(sunMatch||moonMatch||boltMatch||heartMatch||smileyMatch||cloudMatch){
     matches++;
+    matchSound.play();
     if(matches == spriteArray.length/2){
-      setTimeout(function(){alert("You win!");},500);
+      musicButton.hide();
+      resetButton.show();
+      livesDisplay.hide();
+      messageDisplay.html("You Win");
+      //setTimeout(function(){alert("You win!");},500);
       spritesActive = false;
+      winSound.play();
     }
     else{
       firstChoice = undefined;
@@ -225,24 +233,31 @@ function checkMatch(){
   }
   else{
     lives--;
+    livesDisplay.html(lives);
     spritesActive = false;
+    nopeSound.play();
     if(lives === 0){
-      setTimeout(function(){flipAllSprites(); alert("You lose!");},2000);
-      //element.html("You lose");
+      //setTimeout(function(){flipAllSprites(); alert("You lose!");},2000);
+      flipAllSprites();
+      musicButton.hide();
+      resetButton.show();
+      livesDisplay.hide();
+      messageDisplay.html("You Lose");
     }
     else{
-      setTimeout(function(){firstChoice.animation.goToFrame(0);secondChoice.animation.goToFrame(0);firstChoice = undefined; secondChoice = undefined; spritesActive = true;}, 2000);
+      setTimeout(function(){firstChoice.animation.goToFrame(0);secondChoice.animation.goToFrame(0);firstChoice = undefined; secondChoice = undefined; spritesActive = true;}, 1000);
     }
   }
 }
 
 function flipAllSprites(){
   for(var i=0;i<spriteArray.length;i++){
-    
+    spriteArray[i].animation.goToFrame(spriteArray[i].animation.getLastFrame());
   }
 }
 
- /*
-  * function resetAllSprites()
-  * Does exactly the opposite of the above function!
-  */
+function resetAllSprites(){
+   for(var i=0;i<spriteArray.length;i++){
+    spriteArray[i].animation.goToFrame(0);
+  }
+}

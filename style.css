@@ -11,7 +11,14 @@ body {
 }
 
 /* Create your styles below */
-button{
+#Reset{
+	margin: 0 auto;
+	width: 80px;
+	height: 30px;
+}
+
+
+#Music{
 	margin: 0 auto;
 	width: 80px;
 	height: 30px;
