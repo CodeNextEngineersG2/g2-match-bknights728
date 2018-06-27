@@ -37,12 +37,12 @@ function loadImages(){
   transitionImage1 = loadImage("assets/img/transition1.png");
   transitionImage2 = loadImage("assets/img/transition2.png");
   transitionImage3 = loadImage("assets/img/transition3.png");
-  sunImage = loadImage("assets/img/sun.png");
-  moonImage = loadImage("assets/img/moon.png");
-  boltImage = loadImage("assets/img/bolt.png");
-  heartImage = loadImage("assets/img/heart.png");
-  smileyImage = loadImage("assets/img/smiley.png");
-  cloudImage = loadImage("assets/img/cloud.png");
+  sunImage = loadImage("assets/img/Yeezy.png");
+  moonImage = loadImage("assets/img/Sneaker-PNG-Transparent-Image.png");
+  boltImage = loadImage("assets/img/Running .png");
+  heartImage = loadImage("assets/img/Weird.png");
+  smileyImage = loadImage("assets/img/Air Force.png");
+  cloudImage = loadImage("assets/img/Jordan 1.png");
 }
 
 
@@ -76,7 +76,7 @@ function preload(){
 function setup(){
   bgMusic.setVolume(.01);
   bgMusic.loop();
-  gameScreen = createCanvas(790,370);
+  gameScreen = createCanvas(1200,450);
   gameScreen.parent("#game-screen");
   messageDisplay = select("#message-display");
   livesDisplay = select("#lives-display");
@@ -85,8 +85,8 @@ function setup(){
   resetButton.mousePressed(resetGame);
   musicButton.mousePressed(toggleMusic);
   init();
-  spriteWidth = 120;
-  spriteHeight = 168;
+  spriteWidth = 160;
+  spriteHeight = 210;
   imageArray = [backImage, sunImage, moonImage, boltImage, heartImage, smileyImage, cloudImage, transitionImage1, transitionImage2, transitionImage3];
   resizeImages();
   createSprites();
@@ -114,8 +114,8 @@ function init(){
   matches = 0;
   firstChoice = undefined;
   secondChoice = undefined;
-  spriteX = 70;
-  spriteY = 95;
+  spriteX = 140;
+  spriteY = 115;
 }
 
 
@@ -177,11 +177,11 @@ function placeSprites(){
     spriteArray[i].position.x = spriteX;
     spriteArray[i].position.y = spriteY;
     if((i+1)%6 === 0){
-      spriteX = 70;
-      spriteY += spriteHeight + 10; 
+      spriteX = 140;
+      spriteY += spriteHeight + 11; 
     }
     else{
-      spriteX += spriteWidth + 10;
+      spriteX += spriteWidth + 25;
     }
   }
 }
